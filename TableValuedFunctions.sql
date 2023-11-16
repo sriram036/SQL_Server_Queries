@@ -14,7 +14,7 @@ select * from @pr_tb
 
 select * from products
 
--- Table Valued Functions
+-- Inline Table Valued Functions
 
 create function udfGetProducts(
 	@quantity int
@@ -52,8 +52,31 @@ end;
 
 select * from udfStoreCustomer('bangalore')
 
+update udfStoreCustomer('bangalore') set customerName = 'Ravi' where customerName = 'sriram' -- Object 'udfStoreCustomer' cannot be modified.
+
+select * from @customerBasedCity -- Must declare the table variable "@customerBasedCity".
+
 insert into customer (customerName, phone, customerAddress, country, pincode, city) values ('Karthika', 9372947391,'MG Road', 'India', 560020, 'Bangalore')
 
 select * from employees
 
 select * from employees where employeeName in (select customerName from udfStoreCustomer('bangalore'))
+
+-- Inline Table Valued Functions
+
+create function udfGetEmployeesByGender(
+	@gender char
+)
+returns table
+as
+return select employeeName, employeeGender, employeeHiredDate, employeeNumber from employees where employeeGender = @gender
+
+select * from udfGetEmployeesByGender('f')
+
+select * from customer where customerName in (select employeeName from udfGetEmployeesByGender('m'))
+
+select * from udfGetEmployeesByGender('m')
+
+update udfGetEmployeesByGender('m') set employeeName = 'Ravi' where employeeName = 'sriram'
+
+update udfGetEmployeesByGender('m') set employeeDesignation = 'devops' where employeeName = 'ravi' -- Invalid column name 'employeeDesignation'.
