@@ -32,7 +32,7 @@ print 'id' + ' ' + 'Name' + ' ' + 'Number'
 while @@fetch_status = 0
 	begin
 		print cast(@id as varchar) + ' ' + @name + ' ' + cast(@number as varchar)
-		fetch next from cursorEmployees into 
+		fetch next from cursorEmployees into 	
 			@id,
 			@name,
 			@number,
@@ -40,6 +40,7 @@ while @@fetch_status = 0
 			@salary,
 			@designation,
 			@city
+		
 	end
 
 close cursorEmployees
@@ -66,7 +67,7 @@ while @@fetch_status = 0
 		fetch next from updateEmployeeCursor into
 			@name
 	end
-
+select * from employees
 close updateEMployeeCursor
 
 deallocate updateEmployeeCursor
@@ -82,3 +83,7 @@ select employeeName, substring(employeeName, charindex(' ', employeeName)+1, len
 select employeeEmail, substring(employeeEmail, 0, charindex('@', employeeEmail)) as 'name' from employees
 
 select * from managers
+
+declare @noOfEmployees int
+exec spGetEmployeeCountGreaterThanCertainAge 20, @noOfEmployees out
+print @noOfEmployees
